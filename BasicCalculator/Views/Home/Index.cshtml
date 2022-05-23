@@ -1,0 +1,109 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model BasicCalculator.Models.NumberStringModel
+ 
+@{
+    Layout = null;
+}
+
+<style>
+.reset-css {
+  all: initial;
+}
+.my-fieldset {
+  border: 1px solid black;
+  padding : 10px;
+} 
+.my-legend {
+  color: black;
+} 
+.btn-cal {
+    width: 60px;
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: rgb(239, 239, 239);
+}
+.btn-cal:hover {
+    cursor: pointer;
+    background-color: rgb(210, 210, 210);
+}
+.d-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around
+}
+</style>
+
+<script>
+    var xmlHttp = new XMLHttpRequest();
+    function submit() {
+        const EquationText = document.getElementById("EquationText");
+        xmlHttp.open("POST", '/Home/Calculation');
+        xmlHttp.setRequestHeader('Content-Type', 'application/json');
+        xmlHttp.onloadstart = function () {
+            EquationText.value = 'Loading...';    
+        }
+        xmlHttp.onreadystatechange = function() {
+            if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                EquationText.value = xmlHttp.responseText;
+            }
+        }
+        xmlHttp.send(JSON.stringify(EquationText.value));
+    }
+    function onBtnClick(e) {
+        const EquationText = document.getElementById("EquationText");
+        if(e.id === "=") {
+            submit();
+        }
+        else {
+            EquationText.value += e.id;
+        }
+    }
+    function clearInput() {
+         const EquationText = document.getElementById("EquationText");
+         EquationText.value = "";
+    }
+</script>
+
+<div>
+    <fieldset class="reset-css my-fieldset" style="margin-left: 10px;">
+        <legend class="reset-css my-legend">Basic Calculator</legend>
+        <input style="width: 100%; padding: 5px; margin-bottom: 10px;" id="EquationText" />
+        <div style="display: flex; justify-content: space-around; flex-direction: column">
+            <div class="d-row">
+                <div onclick="onBtnClick(this)" id='1' class="btn-cal">1</div>
+                <div onclick="onBtnClick(this)" id='2' class="btn-cal">2</div>
+                <div onclick="onBtnClick(this)" id='3' class="btn-cal">3</div>
+                <div onclick="onBtnClick(this)" id='+' class="btn-cal">+</div>
+            </div>
+            
+            <div class="d-row">
+                <div onclick="onBtnClick(this)" id='4' class="btn-cal">4</div>
+                <div onclick="onBtnClick(this)" id='5' class="btn-cal">5</div>
+                <div onclick="onBtnClick(this)" id='6' class="btn-cal">6</div>
+                <div onclick="onBtnClick(this)" id='-' class="btn-cal">-</div>
+            </div>
+            
+            <div class="d-row">
+                <div onclick="onBtnClick(this)" id='7' class="btn-cal">7</div>
+                <div onclick="onBtnClick(this)" id='8' class="btn-cal">8</div>
+                <div onclick="onBtnClick(this)" id='9' class="btn-cal">9</div>
+                <div onclick="onBtnClick(this)" id='*' class="btn-cal">*</div>
+            </div>
+            
+            <div class="d-row">
+                <div onclick="onBtnClick(this)" id='0' class="btn-cal">0</div>
+                <div onclick="onBtnClick(this)" id='.' class="btn-cal">.</div>
+                <div onclick="onBtnClick(this)" id='=' class="btn-cal">=</div>
+                <div onclick="onBtnClick(this)" id='/' class="btn-cal">/</div>
+            </div>
+
+        </div>
+        <input style="width: 100%; padding: 5px; margin-top: 10px;" type="submit" value="Clear" onclick="clearInput()"/>
+    </fieldset>
+</div>
